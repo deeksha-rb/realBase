@@ -66,7 +66,7 @@ nav li a:hover {
     padding: 10px;
     border: 2px solid white;
     outline: none;
-    border-radius: 60px;
+    border-radius: 20px;
     margin-right: 10px;
     font-size: 14px;
 }
@@ -76,34 +76,40 @@ nav li a:hover {
 }
 
 
-.button_console {
+.button_console button {
     padding: 10px;
     border: none;
     cursor: pointer;
     list-style: none;
+    background-color: white;
+    border-radius: 15px;
 }
 
 .button_console a {
-    font-size: 20px;
+    font-size: 16px;
     text-decoration: none;
-    background-color: white;
-    border-radius: 50px;
+    border-radius: 15px;
 }
 
 .button_console:hover {
-    background-color: #ccc;
+    background-color: linear-gradient(#4d6596, #6378a7);
 }
 
-.button_signIn {
+.button_signIn button {
     padding: 10px;
     border: none;
     cursor: pointer;
     list-style: none;
+    background-color: white;
+    border-radius: 15px;
 }
 
 .button_signIn a {
-    font-size: 20px;
+    font-size: 16px;
     text-decoration: none;
-    background-color: white;
-    border-radius: 50px;
+    border-radius: 15px;
+}
+
+.button_signIn:hover {
+    background-color: linear-gradient(#4d6596, #6378a7);
 }

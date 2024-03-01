@@ -20,4 +20,11 @@ connection.connect(function(error) {
     }
 });
 
+connection.query('select * from customer', (err, result, fields) => {
+    if(err) {
+        return console.log(err);
+    }
+    return console.log(result);
+});
+
 module.exports = connection;
