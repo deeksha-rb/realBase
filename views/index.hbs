@@ -1,31 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>realBase</title>
-    <link rel="stylesheet" href = "css/firstPage.css">
-    <link rel = "icon" href = "images/logo.png" type = "images/png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>realBase</title>
+  <link rel="stylesheet" href = "css/index.css">
+  <link rel = "icon" href = "images/logo.png" type = "images/png">
+
 </head>
 <body>
-    <nav>
-      <div class = "logo">realBase</div>  
-      <ul class = "items">
-        <li><a href = "#">Build</a></li>
-        <li><a href = "#">Fundamentals</a></li>
-        <li><a href = "#">About</a></li>
-      </ul>
-      <div class="search">
-        <form>
-          <input type = "text" placeholder="   Search!!   ">
-        </form>
-      </div>
-      <div class="button_console">
-        <button><a href = "#">Go to console</a></button>
-      </div>  
-      <div class = "button_signIn">
-        <button><a href = "/signIn">Sign in</a></button>
-      </div>
-    </nav>
+  <div class = "imageBox"> 
+  <img src = "images/realBase.png" alt = "imageRealBase">
+  </div>
+
+  <div class = "signInBox">
+    <form action = "/" method = "POST">
+    <label for="emailID">Email:</label>
+    <input type="email" id="emailID" name="emailID" required><br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required><br>
+    <button type="submit">Sign In</button>
+  </form>
+
+  {{#if invalidCredentials}}
+    <p style="color: rgb(126, 34, 34);"> Invalid username or password</p>
+  {{/if}}
+
+  <div class = "textRegister">
+    <p> New user? <a href = "/register"> Click here to register </a> </p>
+  </div>
+  </div>
+
 </body>
 </html>

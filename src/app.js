@@ -18,11 +18,7 @@ app.get("/", (req, res) => {
     res.render("index");
 });
 
-app.get("/signIn", (req, res) => {
-    res.render("signIn");
-});
-
-app.post('/signin', (req, res) => {
+app.post('/', (req, res) => {
 
   const { emailID, password } = req.body;
   const query = 'SELECT * FROM customer WHERE emailID = ? AND password = ?';
@@ -30,11 +26,15 @@ app.post('/signin', (req, res) => {
   connection.query(query, [emailID, password], (err, results) => {
     if (err) throw err;
     if (results.length > 0) {
-      res.send('Login successful');
+      res.redirect('/console');
     } else {
-      res.send('Invalid Email ID or password');
+      res.render('index', { invalidCredentials: true });
     }
   });
+});
+
+app.get("/console", (req,res) => {
+  res.render("console");
 });
 
 app.get("/register", (req, res) => {
@@ -43,13 +43,26 @@ app.get("/register", (req, res) => {
 
 app.post("/register", async (req,res) => {
     try {
-      console.log(req.body.emailID);
-      res.send(req.body.emailID);
+      const password = req.body.password;
+      const confirmPassword = req.body.confirmPassword;
+
+      if (password == confirmPassword) {
+        const { customerName, emailID, password } = req.body;
+        const query = 'INSERT INTO customer ( customerName, emailID, password ) VALUES (?, ?, ?)';
+        
+        connection.query(query, [customerName, emailID, password], (err, results) => {
+          if (err) throw err;
+          // res.render('register', { successful: true });
+          console.log("User registered successfully");
+          res.redirect('/')
+        });
+      }
     } 
     catch (error) {
       res.status(400).send(error);
     }
 });
+
 
 app.listen(port, () => {
     console.log(`server is running at port number ${port}`);
