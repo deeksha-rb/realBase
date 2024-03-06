@@ -1,7 +1,6 @@
 const express = require("express");
 const app = express();
 const path = require("path");
-// const encoder = require("body-parser");
 
 const connection = require("../src/database/database");
 const static_path = path.join(__dirname, "../views");
@@ -63,6 +62,9 @@ app.post("/register", async (req,res) => {
     }
 });
 
+app.get("/tables", (req,res) => {
+    res.render("tables")
+});
 
 app.listen(port, () => {
     console.log(`server is running at port number ${port}`);
