@@ -11,9 +11,10 @@
     {{!-- <div class = "imageBox"> 
     <img src = "images/create.png" alt = "creating">
     </div> --}}
-    <h1> Your database </h1>
-    
-<table>
+    <h1>  </h1>
+
+    <button onclick= "createDid()"> + add your project </button>
+{{!-- <table>
     <tr class = "fixed">
         <td colspan="2"></td> 
     </tr>
@@ -23,13 +24,18 @@
         </td>
     </tr>
     
-</table>
+</table> --}}
 
 <script>
 
-function createTable() {
-    create table 
-}
+    function createDid() {
+        let Did = 1;
+        while (true) {
+            yield Did++;
+        }
+    }
+    const Did = createDid()
+    console.log(Did);
 </script>
 
 </body>

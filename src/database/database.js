@@ -20,7 +20,7 @@ connection.connect(function(error) {
     }
 });
 
-connection.query('select * from customer', (err, result, fields) => {
+connection.query('select * from users', (err, result, fields) => {
     if(err) {
         return console.log(err);
     }

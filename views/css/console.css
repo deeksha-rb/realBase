@@ -97,3 +97,19 @@ nav li a:hover {
     color: #9acbff;
     text-decoration: none;
 }
+
+.userInitials {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    background-color: #007bac;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+}
