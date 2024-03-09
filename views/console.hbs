@@ -20,12 +20,38 @@
           <input type = "text" placeholder="   Search!!   ">
         </form>
       </div>
-      <div class="button_console">
-        <button><a href = "/tables">Go to console</a></button>
-      </div>  
-      {{!-- <div class = "userInitials">
-        {{Name.charAt(0)}}
-      </div> --}}
+      
+      <div class="userInitials">
+        {{firstChar Name}}
+    </div>
+
     </nav>
+
+    <div class = "imageBox"> 
+      <img src = "images/create.png" alt = "creating">
+    </div>
+
+    <button class = "console-button" id="openModal" onclick="projectName()"> <a>+ add your table</a></button>
+
+    <form id = "myForm" action = "/console" method="POST"> 
+      <div id="myModal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <p>Provide your table name:</p>
+          <input class = "recieve" type="text" id="nameInput" name = "nameInput">
+          <div class = "container">
+              <h1> Add attributes to your table </h1>
+          <div class = "wrap">  
+              <a href = "#" class = "add">&plus;</a>
+          </div>  
+          <div class="input-group"> </div>
+          </div>
+          <button type = "submit" class = "submit" id="submitBtn"> <a> Apply </a> </button>
+        </div>
+      </div>
+    </form>
+
+  <script src = "script.js"> </script>
+
 </body>
 </html>
