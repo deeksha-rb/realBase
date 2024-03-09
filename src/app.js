@@ -111,7 +111,7 @@ app.post("/register", async (req, res) => {
 //     PRIMARY KEY (`idnew_table`));
 
 app.post("/console", (req, res) => {
-    const {nameInput, CN, TP} = req.body;
+    const {nameInput, CN, TP, field} = req.body;
     console.log(req.body);
 
     if (!Array.isArray(CN) || !Array.isArray(TP) || CN.length !== TP.length) {
@@ -119,12 +119,16 @@ app.post("/console", (req, res) => {
     }
 
     let columnDefs = "";
+    let = fieldDefs = "";
     for (let i = 0; i < CN.length; i++) {
         columnDefs += `${CN[i]} ${TP[i]}, `;
+        fieldDefs += `'${field[i]}', `;
     }
     columnDefs = columnDefs.slice(0, -2);
+    fieldDefs = fieldDefs.slice(0, -2);
 
-    const query = `CREATE TABLE  ${nameInput} (${columnDefs});`;
+    const query = `CREATE TABLE ${nameInput}(${columnDefs});`;
+    console.log(query);
     console.log(connection.query);
     connection.query(query, (err, results) =>  {
         if (err) {
@@ -132,14 +136,23 @@ app.post("/console", (req, res) => {
             return res.status(500).send({ message: 'Could not create table' });
         }
         console.log("Table created successfully");
-        res.redirect('/views')
+        
+        const insertQuery = `INSERT INTO ${nameInput} VALUES(${fieldDefs}); `;
+        connection.query(insertQuery, (err, result) => {
+            if (err) {
+                console.error('Could not insert data into table', err);
+                return res.status(500).send({ message: 'Could not insert data into table' });
+            }
+            console.log("Data inserted successfully");
+            res.redirect("/views");
+        });
     });
 });
-
 
 app.get("/views", (req, res) => {
     res.render("views");
 }); 
+
 
 function retrieveID(req, res, next){
     const token = req.cookies.token;
