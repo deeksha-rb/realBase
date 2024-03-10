@@ -201,6 +201,7 @@ app.post("/views", (req, res) => {
 app.get("/display", (req, res) => {
     const currentTable = req.query.currentTable;    
 
+    // Fetch data from the database 
     const dataQuery = `SELECT * FROM ${currentTable}`;
     console.log("hfh", {currentTable});
     connection.query(dataQuery, (err, tableData) => {
@@ -214,48 +215,81 @@ app.get("/display", (req, res) => {
     });
 });
 
-// app.post("/display", (req, res) => {
-//     const currentTable = req.body.currentTable;
-//     const columns = Object.keys(req.body);
-//     const values = Object.values(req.body);
+// app.get("/display", (req, res) => {
+//     const currentTable = req.query.currentTable;    
 
-//     // Remove the 'currentTable' value from the arrays
-//     const indexToRemove = columns.indexOf('currentTable');
-//     if (indexToRemove > -1) {
-//         columns.splice(indexToRemove, 1);
-//         values.splice(indexToRemove, 1);
-//     }
-
-//     // Split the values into chunks to represent each row
-//     const chunkedValues = chunkArray(values, columns.length);
-
-//     let insertQuery = `INSERT INTO ${currentTable} VALUES `;
-//     insertQuery += chunkedValues.map(row => `(${row.map(value => `'${value}'`).join(', ')})`).join(', ');
-
-//     console.log("Insert Query:", insertQuery);
-
-//     // Execute the INSERT query
-//     connection.query(insertQuery, (err, result) => {
+//     const dataQuery = `SELECT * FROM ${currentTable}`;
+//     console.log("hfh", {currentTable});
+//     connection.query(dataQuery, (err, tableData) => {
 //         if (err) {
-//             console.error('Error inserting values into table:', err);
-//             res.status(500).send('Error inserting values into table');
+//             console.error('Error fetching data from table:', err);
+//             res.status(500).send('Error fetching data from table');
 //             return;
 //         }
-//         console.log("Values inserted successfully");
-//         res.redirect("/views"); // Redirect back to the display page
+        
+//         res.render("display", { selectedTable: currentTable, columns: [], tableData: tableData }); 
 //     });
 // });
 
-// // Function to split array into chunks
-// function chunkArray(array, size) {
-//     const chunkedArr = [];
-//     for (let i = 0; i < array.length; i += size) {
-//         chunkedArr.push(array.slice(i, i + size));
-//     }
-//     return chunkedArr;
-// }
 
 
+// app.post('/display', (req, res) => {
+//     const formData = req.body;
+//     const currentTable = req.body.selectedTable;
+
+//     const fieldNames = Object.keys(formData).join(', ');
+//     const fieldValues = Object.values(formData).map(value => typeof value === 'string' ? `'${value}'` : value).join(', ');
+
+//     const query = `INSERT INTO ${currentTable} VALUES (${fieldValues});`;
+
+//     console.log(query);
+//     res.send('Form data received successfully');
+
+// });
+    
+
+
+
+// app.post("/display", (req, res) => {
+//     const formData = req.body; 
+//     const filteredFormData = Object.keys(formData)
+//         .filter(key => !formData.columns.some(column => column.Field === key))
+//         .reduce((obj, key) => {
+//             obj[key] = formData[key];
+//             return obj;
+//         }, {});
+
+//     console.log(filteredFormData); 
+//     res.send('Form data received successfully');
+// });
+
+app.post("/display", (req, res) => {
+    const currentTable = req.body.currentTable;
+    console.log(currentTable);
+    const values = Object.values(req.body);
+    const columns = Object.keys(req.body);
+
+    // Prepare the SQL INSERT query
+    const indexToRemove = columns.indexOf('currentTable');
+    if (indexToRemove > -1) {
+        columns.splice(indexToRemove, 1);
+        values.splice(indexToRemove, 1);
+    }
+
+    const insertQuery = `INSERT INTO ${currentTable} VALUES (${values.map(value => `'${value}'`).join(', ')});`;
+    console.log("Insert Query:", insertQuery);
+
+    // Execute the INSERT query
+    connection.query(insertQuery, (err, result) => {
+        if (err) {
+            console.error('Error inserting values into table:', err);
+            res.status(500).send('Error inserting values into table');
+            return;
+        }
+        console.log("Values inserted successfully");
+        res.redirect("/views"); // Redirect back to the display page
+    });
+});
 
 app.listen(port, () => {
     console.log(`server is running at port number ${port}`);

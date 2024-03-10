@@ -10,6 +10,73 @@
 <body>
     <h1>Enter your table Data</h1>
     
+    
+    <form action="/display" method="POST">
+    
+        
+        <div class="box">
+            {{!-- <a href="#" id="addRow" class="add">&plus; Add Row</a> --}}
+            <div class="table">
+                <table id="dataTable">
+                    <thead>
+                        <tr>
+                            {{#each columns}}
+                                <th>{{this.Field}}</th>
+                            {{/each}}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            {{#each columns}}
+                                <td><input type="text" name="{{this.Field}}" required></td>
+                            {{/each}}
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="submit" class="submit-button">Apply</button>
+                <input type="hidden" id="currentTableInput" name="currentTable" value="{{ selectedTable }}">
+            </div>
+        </div>
+    </form>
+
+    <script>
+        {{!-- document.addEventListener('DOMContentLoaded', function() {
+            const selectedTable = "your_table_name"; // Replace with the actual selected table name
+            document.getElementById('currentTableInput').value = selectedTable;
+        }); --}}
+
+        const tableBody = document.querySelector("#dataTable tbody");
+        const addRowButton = document.getElementById("addRow");
+
+        addRowButton.addEventListener('click', function() {
+            const newRow = document.createElement("tr");
+            document.querySelectorAll("#dataTable tbody tr:first-child td").forEach(function(cell) {
+                const newCell = document.createElement("td");
+                const input = document.createElement("input");
+                input.type = "text";
+                input.name = cell.querySelector('input').name; 
+                newCell.appendChild(input);
+                newRow.appendChild(newCell);
+            });
+            tableBody.appendChild(newRow);
+        });
+    </script> 
+    
+</body>
+</html>
+
+{{!-- <!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>realBase|console</title>
+    <link rel="stylesheet" href="css/display.css">
+    <link rel="icon" href="images/logo.png" type="images/png">
+</head>
+<body>
+    <h1>Enter your table Data</h1>
+    
     <form id="dataForm">        
         <div class="box">
             <a href="#" id="addRow" class="add">&plus; Add Row</a>
@@ -69,9 +136,8 @@
             })
             .then(data => {
                 console.log('Data:', data);
-                // If insertion is successful, clear the form and add a new row
                 form.reset();
-                addRowButton.click(); // Simulate clicking the "Add Row" button
+                addRowButton.click();
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -80,67 +146,4 @@
     </script>
     
 </body>
-</html>
-
-
-
-{{!-- <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>realBase|console</title>
-    <link rel="stylesheet" href="css/display.css">
-    <link rel="icon" href="images/logo.png" type="images/png">
-</head>
-<body>
-    <h1>Enter your table Data</h1>
-    
-    <form action="/display" method="POST">        
-        <div class="box">
-            <a href="#" id="addRow" class="add">&plus; Add Row</a>
-            <div class="table">
-                <table id="dataTable">
-                    <thead>
-                        <tr>
-                            {{#each columns}}
-                                <th>{{this.Field}}</th>
-                            {{/each}}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            {{#each columns}}
-                                <td><input type="text" name="{{this.Field}}" required></td>
-                            {{/each}}
-                        </tr>
-                    </tbody>
-                </table>
-                <button type="submit" class="submit-button">Apply</button>
-                <input type="hidden" id="currentTableInput" name="currentTable" value="{{ selectedTable }}">
-            </div>
-        </div>
-    </form>
-
-    <script>
-        const tableBody = document.querySelector("#dataTable tbody");
-        const addRowButton = document.getElementById("addRow");
-
-        addRowButton.addEventListener('click', function() {
-            const newRow = document.createElement("tr");
-            document.querySelectorAll("#dataTable tbody tr:first-child td").forEach(function(cell) {
-                const newCell = document.createElement("td");
-                const input = document.createElement("input");
-                input.type = "text";
-                input.name = cell.querySelector('input').name; 
-                newCell.appendChild(input);
-                newRow.appendChild(newCell);
-            });
-            tableBody.appendChild(newRow);
-        });
-    </script>
-    
-</body>
-</html>
-
- --}}
+</html> --}}
