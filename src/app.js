@@ -80,13 +80,6 @@ function retrieveID(req, res, next){
     next();
 }
 
-app.get("/console", verifyToken, retrieveID, (req, res) => {
-  const token = req.cookies.token;
-  const decoded = jwt.decode(token);
-  const Name = decoded.Name;
-  res.render("console", { Name: Name });
-});
-
 app.get("/about", (req, res) => { 
     res.render("about");
 });
@@ -113,6 +106,13 @@ app.post("/register", async (req, res) => {
       console.error('Error:', error);
       res.status(400).send(error);
   }
+});
+
+app.get("/console", verifyToken, retrieveID, (req, res) => {
+    const token = req.cookies.token;
+    const decoded = jwt.decode(token);
+    const Name = decoded.Name;
+    res.render("console", { Name: Name });
 });
 
 app.post("/console", retrieveID, (req, res) => {
@@ -157,6 +157,9 @@ app.post("/console", retrieveID, (req, res) => {
 
 app.get("/views", retrieveID, (req, res) => {
     const currentID = req.ID;
+    const token = req.cookies.token;
+    const decoded = jwt.decode(token);
+    const Name = decoded.Name;
     
     const newQuery = `SELECT \`Table Name\` FROM id_tables where ID = ${currentID} `; 
     connection.query(newQuery, (err, results) => {
@@ -166,7 +169,7 @@ app.get("/views", retrieveID, (req, res) => {
             return;
         }
         const tableNames = results.map(result => result['Table Name']);
-        res.render('views', { tableNames }); 
+        res.render('views', { tableNames, Name: Name });
     });
 }); 
 
@@ -183,22 +186,76 @@ app.post("/views", (req, res) => {
         }
 
         const dataQuery = `SELECT * FROM ${currentTable}`;
+
         connection.query(dataQuery, (err, tableData) => {
             if (err) {
                 console.error('Error fetching data from table:', err);
                 res.status(500).send('Error fetching data from table');
                 return;
             }
-            res.render('display', { columns: columns });
-            console.log(tableData);
+            res.render('display', { selectedTable: currentTable, columns: columns });
         });
     });
 });
 
-app.get("/display", (req,res) => {
-    const tableData = [];
-    res.render("display", { tableData: tableData });
+app.get("/display", (req, res) => {
+    const currentTable = req.query.currentTable;    
+
+    const dataQuery = `SELECT * FROM ${currentTable}`;
+    console.log("hfh", {currentTable});
+    connection.query(dataQuery, (err, tableData) => {
+        if (err) {
+            console.error('Error fetching data from table:', err);
+            res.status(500).send('Error fetching data from table');
+            return;
+        }
+        
+        res.render("display", { selectedTable: currentTable, columns: [], tableData: tableData }); 
+    });
 });
+
+// app.post("/display", (req, res) => {
+//     const currentTable = req.body.currentTable;
+//     const columns = Object.keys(req.body);
+//     const values = Object.values(req.body);
+
+//     // Remove the 'currentTable' value from the arrays
+//     const indexToRemove = columns.indexOf('currentTable');
+//     if (indexToRemove > -1) {
+//         columns.splice(indexToRemove, 1);
+//         values.splice(indexToRemove, 1);
+//     }
+
+//     // Split the values into chunks to represent each row
+//     const chunkedValues = chunkArray(values, columns.length);
+
+//     let insertQuery = `INSERT INTO ${currentTable} VALUES `;
+//     insertQuery += chunkedValues.map(row => `(${row.map(value => `'${value}'`).join(', ')})`).join(', ');
+
+//     console.log("Insert Query:", insertQuery);
+
+//     // Execute the INSERT query
+//     connection.query(insertQuery, (err, result) => {
+//         if (err) {
+//             console.error('Error inserting values into table:', err);
+//             res.status(500).send('Error inserting values into table');
+//             return;
+//         }
+//         console.log("Values inserted successfully");
+//         res.redirect("/views"); // Redirect back to the display page
+//     });
+// });
+
+// // Function to split array into chunks
+// function chunkArray(array, size) {
+//     const chunkedArr = [];
+//     for (let i = 0; i < array.length; i += size) {
+//         chunkedArr.push(array.slice(i, i + size));
+//     }
+//     return chunkedArr;
+// }
+
+
 
 app.listen(port, () => {
     console.log(`server is running at port number ${port}`);

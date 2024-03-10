@@ -11,16 +11,13 @@
     <nav>
       <div class = "logo">
         <img class = "logoimg" src = "images/logo.png"> 
-        <a>realBase</a>
+        <a class = "logoNameA">realBase</a>
       </div>  
-      <ul class = "items">
-        <li><a href = "/about">About</a></li>
-      </ul>
-      <div class="search">
-        <form>
-          <input type = "text" placeholder="   Search!!   ">
-        </form>
-      </div>
+      
+      <button class = "aboutA" >
+        <a href = "/about">about realBase</a>
+      </button>
+      
       
       <div class="userInitials">
         {{firstChar Name}}
@@ -33,7 +30,8 @@
     </div>
 
     <button class = "console-button" id="openModal" onclick="projectName()"> <a>+ add your table</a></button>
-
+    <button class = "table-button" onclick="tablesPage()"> <a> ---> Your Tables </a></button>
+    
     <form id = "myForm" action = "/console" method="POST"> 
       <div id="myModal" class="modal">
         <div class="modal-content">

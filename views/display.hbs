@@ -8,81 +8,80 @@
     <link rel="icon" href="images/logo.png" type="images/png">
 </head>
 <body>
-    <h1>Your table Data</h1>
-    <div class="box">
-        <div class="table">
-            <table>
-                <thead>
-                    <tr>
-                        {{#each columns}}
-                            <th>{{this.Field}}</th>
-                        {{/each}}
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each tableData}}
+    <h1>Enter your table Data</h1>
+    
+    <form id="dataForm">        
+        <div class="box">
+            <a href="#" id="addRow" class="add">&plus; Add Row</a>
+            <div class="table">
+                <table id="dataTable">
+                    <thead>
                         <tr>
-                            {{#each this}}
-                                <td>{{this}}</td>
+                            {{#each columns}}
+                                <th>{{this.Field}}</th>
                             {{/each}}
                         </tr>
-                    {{/each}}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            {{#each columns}}
+                                <td><input type="text" name="{{this.Field}}" required></td>
+                            {{/each}}
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="button" id="submitData" class="submit-button">Apply</button>
+                <input type="hidden" id="currentTableInput" name="currentTable" value="{{ selectedTable }}">
+            </div>
         </div>
-        <a href="#" class="add">&plus; Add Field</a>
-    </div>
+    </form>
 
     <script>
-        const addButton = document.querySelector(".add");
+        const tableBody = document.querySelector("#dataTable tbody");
+        const addRowButton = document.getElementById("addRow");
+        const submitButton = document.getElementById("submitData");
+        const form = document.getElementById("dataForm");
 
-        function removeInput() {
-            this.parentElement.remove();
-        }
-
-        addButton.addEventListener("click", function() {
-            const flex = document.createElement("div");
-            flex.className = "flex";
-
-            const input = document.createElement("input");
-            input.type = "text";
-            input.placeholder = "New Field";
-            input.name = "newField";
-
-            const deleteButton = document.createElement("a");
-            deleteButton.className = "delete";
-            deleteButton.innerHTML = "&times;";
-
-            deleteButton.addEventListener("click", removeInput);
-
-            flex.appendChild(input);
-            flex.appendChild(deleteButton);
-
-            document.querySelector(".input-group").appendChild(flex);
-        });
-
-        window.addEventListener("DOMContentLoaded", function() {
-            const columnNames = JSON.parse('{{{columns}}}');
-            const inputGroup = document.querySelector(".input-group");
-            columnNames.forEach(columnName => {
-                const flex = document.createElement("div");
-                flex.className = "flex";
+        addRowButton.addEventListener('click', function() {
+            const newRow = document.createElement("tr");
+            document.querySelectorAll("#dataTable tbody tr:first-child td").forEach(function(cell) {
+                const newCell = document.createElement("td");
                 const input = document.createElement("input");
                 input.type = "text";
-                input.placeholder = columnName.Field;
-                input.name = columnName.Field;
-                const deleteButton = document.createElement("a");
-                deleteButton.className = "delete";
-                deleteButton.innerHTML = "&times;";
-                deleteButton.addEventListener("click", removeInput);
-                flex.appendChild(input);
-                flex.appendChild(deleteButton);
-                inputGroup.appendChild(flex);
+                input.name = cell.querySelector('input').name; 
+                newCell.appendChild(input);
+                newRow.appendChild(newCell);
+            });
+            tableBody.appendChild(newRow);
+        });
+
+        submitButton.addEventListener('click', function() {
+            const formData = new FormData(form);
+            fetch('/display', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Data:', data);
+                // If insertion is successful, clear the form and add a new row
+                form.reset();
+                addRowButton.click(); // Simulate clicking the "Add Row" button
+            })
+            .catch(error => {
+                console.error('Error:', error);
             });
         });
     </script>
+    
 </body>
 </html>
+
 
 
 {{!-- <!DOCTYPE html>
@@ -92,65 +91,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>realBase|console</title>
     <link rel="stylesheet" href="css/display.css">
-    <link rel = "icon" href = "images/logo.png" type = "images/png">
+    <link rel="icon" href="images/logo.png" type="images/png">
 </head>
 <body>
-    <h1>Your table Data</h1>
-    <div class="box">
-
-        <div class="input-group">
-            
+    <h1>Enter your table Data</h1>
+    
+    <form action="/display" method="POST">        
+        <div class="box">
+            <a href="#" id="addRow" class="add">&plus; Add Row</a>
+            <div class="table">
+                <table id="dataTable">
+                    <thead>
+                        <tr>
+                            {{#each columns}}
+                                <th>{{this.Field}}</th>
+                            {{/each}}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            {{#each columns}}
+                                <td><input type="text" name="{{this.Field}}" required></td>
+                            {{/each}}
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="submit" class="submit-button">Apply</button>
+                <input type="hidden" id="currentTableInput" name="currentTable" value="{{ selectedTable }}">
+            </div>
         </div>
-        <a href="#" class="add">&plus; Add Field</a>
-    </div>
+    </form>
 
     <script>
-        const addButton = document.querySelector(".add");
+        const tableBody = document.querySelector("#dataTable tbody");
+        const addRowButton = document.getElementById("addRow");
 
-        function removeInput() {
-            this.parentElement.remove();
-        }
-
-        addButton.addEventListener("click", function() {
-            const flex = document.createElement("div");
-            flex.className = "flex";
-
-            const input = document.createElement("input");
-            input.type = "text";
-            input.placeholder = "New Field";
-            input.name = "newField";
-
-            const deleteButton = document.createElement("a");
-            deleteButton.className = "delete"; 
-            deleteButton.innerHTML = "&times;";
-
-            deleteButton.addEventListener("click", removeInput);
-
-            flex.appendChild(input);
-            flex.appendChild(deleteButton);
-
-            document.querySelector(".input-group").appendChild(flex);
-        });
-
-        window.addEventListener("DOMContentLoaded", function() {
-            const columnNames = JSON.parse('{{{columns}}}'); 
-            const inputGroup = document.querySelector(".input-group");
-            columnNames.forEach(columnName => {
-                const flex = document.createElement("div");
-                flex.className = "flex";
+        addRowButton.addEventListener('click', function() {
+            const newRow = document.createElement("tr");
+            document.querySelectorAll("#dataTable tbody tr:first-child td").forEach(function(cell) {
+                const newCell = document.createElement("td");
                 const input = document.createElement("input");
                 input.type = "text";
-                input.placeholder = columnName.Field;
-                input.name = columnName.Field;
-                const deleteButton = document.createElement("a");
-                deleteButton.className = "delete"; 
-                deleteButton.innerHTML = "&times;";
-                deleteButton.addEventListener("click", removeInput);
-                flex.appendChild(input);
-                flex.appendChild(deleteButton);
-                inputGroup.appendChild(flex);
+                input.name = cell.querySelector('input').name; 
+                newCell.appendChild(input);
+                newRow.appendChild(newCell);
             });
+            tableBody.appendChild(newRow);
         });
     </script>
+    
 </body>
-</html> --}}
+</html>
+
+ --}}

@@ -18,6 +18,10 @@ function projectName() {
   }
 }
 
+function tablesPage(){
+  window.location.href = "/views";
+}
+
 const addButton = document.querySelector(".add");
 const input = document.querySelector(".input-group");
 
