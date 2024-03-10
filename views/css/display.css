@@ -1,0 +1,77 @@
+* {
+    background-color: #022836;
+}
+
+h1 {
+    color: #9acbff;
+    margin: 40px;
+}
+
+/* .box {  
+    background-color: #9acbff;
+    margin: 40px;
+} */
+
+/* display.css */
+.box {
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+    flex-direction: column;
+}
+
+.flex {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.flex input[type="text"] {
+    flex: 1;
+    margin-right: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.delete {
+    display: inline-block;
+    padding: 6px 10px;
+    background-color: #ff6347;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 50%;
+}
+
+.delete:hover {
+    background-color: #cc4c37;
+}
+
+/* .table {
+    background-color: #022836;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background-color: #022836;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+th {
+    background-color: #f2f2f2;
+}
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+tr:hover {
+    background-color: #ddd;
+} */

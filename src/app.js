@@ -72,11 +72,23 @@ function verifyToken(req, res, next) {
   });
 }
 
-app.get("/console", verifyToken, (req, res) => {
+function retrieveID(req, res, next){
+    const token = req.cookies.token;
+
+    const decoded = jwt.decode(token);
+    req.ID = decoded.id;
+    next();
+}
+
+app.get("/console", verifyToken, retrieveID, (req, res) => {
   const token = req.cookies.token;
   const decoded = jwt.decode(token);
   const Name = decoded.Name;
   res.render("console", { Name: Name });
+});
+
+app.get("/about", (req, res) => { 
+    res.render("about");
 });
 
 app.get("/register", (req, res) => {
@@ -103,15 +115,11 @@ app.post("/register", async (req, res) => {
   }
 });
 
-// ALTER TABLE `realbase`.`new_table` 
-// ADD UNIQUE INDEX `idnew_table_UNIQUE` (`idnew_table` ASC) VISIBLE;
-// ;
-// CREATE TABLE `realbase`.`new_table` (
-//     `idnew_table` INT NOT NULL,
-//     PRIMARY KEY (`idnew_table`));
+app.post("/console", retrieveID, (req, res) => {
+    const currentID = req.ID;
+    console.log(`ID: ${req.ID}` );
 
-app.post("/console", (req, res) => {
-    const {nameInput, CN, TP, field} = req.body;
+    const {nameInput, CN, TP} = req.body;
     console.log(req.body);
 
     if (!Array.isArray(CN) || !Array.isArray(TP) || CN.length !== TP.length) {
@@ -119,15 +127,12 @@ app.post("/console", (req, res) => {
     }
 
     let columnDefs = "";
-    let = fieldDefs = "";
     for (let i = 0; i < CN.length; i++) {
         columnDefs += `${CN[i]} ${TP[i]}, `;
-        fieldDefs += `'${field[i]}', `;
     }
     columnDefs = columnDefs.slice(0, -2);
-    fieldDefs = fieldDefs.slice(0, -2);
 
-    const query = `CREATE TABLE ${nameInput}(${columnDefs});`;
+    const query = `CREATE TABLE ${nameInput} (${columnDefs});`;
     console.log(query);
     console.log(connection.query);
     connection.query(query, (err, results) =>  {
@@ -136,38 +141,74 @@ app.post("/console", (req, res) => {
             return res.status(500).send({ message: 'Could not create table' });
         }
         console.log("Table created successfully");
-        
-        const insertQuery = `INSERT INTO ${nameInput} VALUES(${fieldDefs}); `;
-        connection.query(insertQuery, (err, result) => {
+    });
+
+    const newTableQuery =  `INSERT INTO id_tables values('${currentID}', '${nameInput}');`;
+    console.log(`Inserted your ${currentID}, ${nameInput} into our database`);
+
+    connection.query(newTableQuery, (err, results) => {
+        if (err) {
+            return res.status(500);
+        }
+        res.redirect("/views");
+    });
+    
+});
+
+app.get("/views", retrieveID, (req, res) => {
+    const currentID = req.ID;
+    
+    const newQuery = `SELECT \`Table Name\` FROM id_tables where ID = ${currentID} `; 
+    connection.query(newQuery, (err, results) => {
+        if (err) {
+            console.error('Error fetching data from database:', err);
+            res.status(500).send('Internal Server Error');
+            return;
+        }
+        const tableNames = results.map(result => result['Table Name']);
+        res.render('views', { tableNames }); 
+    });
+}); 
+
+app.post("/views", (req, res) => {
+    const currentTable = req.body.currentTable;
+
+    const columnQuery = `SHOW COLUMNS FROM ${currentTable}`;
+    const sizequery = `SELECT COUNT(*) AS num_columns FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'realBase' AND TABLE_NAME = '${currentTable}';`;
+    console.log(sizequery);
+
+    connection.query(sizequery, (err, num_columns) => {
+        if (err) {
+            res.status(500)
+            return;
+        }
+        console.log(num_columns);
+    })
+
+    connection.query(columnQuery, (err, columns) => {
+        if (err) {
+            console.error('Error fetching columns from table:', err);
+            res.status(500).send('Error fetching columns from table');
+            return;
+        }
+
+        const dataQuery = `SELECT * FROM ${currentTable}`;
+        connection.query(dataQuery, (err, tableData) => {
             if (err) {
-                console.error('Could not insert data into table', err);
-                return res.status(500).send({ message: 'Could not insert data into table' });
+                console.error('Error fetching data from table:', err);
+                res.status(500).send('Error fetching data from table');
+                return;
             }
-            console.log("Data inserted successfully");
-            res.redirect("/views");
+            res.render('display', { columns: JSON.stringify(columns) });
+            console.log(tableData);
         });
     });
 });
 
-app.get("/views", (req, res) => {
-    res.render("views");
-}); 
-
-
-function retrieveID(req, res, next){
-    const token = req.cookies.token;
-    // if (!token) {
-    //     return res.status(401).send({ auth: false, message: 'No token provided.' });
-    // }
-
-    const decoded = jwt.decode(token);
-    // if (!decoded || !decoded.id) {
-    //     return res.status(401).send({ auth: false, message: 'Invalid token.' });
-    // }
-
-    req.ID = decoded.id;
-    next();
-}
+app.get("/display", (req,res) => {
+    const tableData = [];
+    res.render("display", { tableData: tableData });
+});
 
 app.listen(port, () => {
     console.log(`server is running at port number ${port}`);

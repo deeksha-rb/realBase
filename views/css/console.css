@@ -20,13 +20,25 @@ nav {
 }  
 
 .logo {
+    background-color: #9acbff;
+}
+
+.logoimg {
+    width: 50px;
+    height: 40px;
+    background-color: #9acbff;
+    margin-top: 10px;   
+    /* margin-right: 2px;
+    margin-left: 30px; */
+    align-items: center;
+}
+.logo a {
     font-size: 34px;
-    font-weight:550;
+    font-weight:600;
     letter-spacing: 1.5px;
-    color: #00315c;
+    color: #022836;
     cursor: pointer;
-    margin-left: 50px;
-    margin-right: 10px;
+    margin-left: 10px;
     background-color: #9acbff;
 }
 

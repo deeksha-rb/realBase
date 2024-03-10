@@ -1,14 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>realBase</title>
-    <link rel="stylesheet" href = "css/views.css">
+    <title>realBase|console</title>
+    <link rel="stylesheet" href="css/views.css">
     <link rel = "icon" href = "images/logo.png" type = "images/png">
 </head>
 <body>
-    HIIIII
+    <h1>Your tables:</h1>
     
+    <form action = "/views" method="POST">
+     <input type="hidden" id="currentTableInput" name="currentTable" value="">
+        {{#each tableNames}}
+            <button type="submit" class="select-button" onclick="selectTable('{{this}}')">{{this}}</button>
+        {{/each}}
+    </form>
+    
+    <script>
+        function selectTable(tableName) {
+            document.getElementById('currentTableInput').value = tableName;
+            document.getElementById('tableForm').submit(); 
+        }
+    </script>
 </body>
-</html>   
+</html>

@@ -78,12 +78,6 @@ function addInput() {
   type.add(option8);
   option8.id = "O8";
 
-  const field = document.createElement("input");
-  field.type = "text";
-  field.placeholder = "values";
-  field.name = "field";
-  field.id = "field";
-
   const deleteButton  = document.createElement("a");
   deleteButton.className = "delete"; 
   deleteButton.innerHTML = "&times";
@@ -98,9 +92,6 @@ function addInput() {
   flex.appendChild(columnName);
   flex.appendChild(type);
   flex.appendChild(deleteButton);
-  flex.appendChild(field);
 }
 
 addButton.addEventListener("click", addInput);
-
-
