@@ -174,16 +174,6 @@ app.post("/views", (req, res) => {
     const currentTable = req.body.currentTable;
 
     const columnQuery = `SHOW COLUMNS FROM ${currentTable}`;
-    const sizequery = `SELECT COUNT(*) AS num_columns FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'realBase' AND TABLE_NAME = '${currentTable}';`;
-    console.log(sizequery);
-
-    connection.query(sizequery, (err, num_columns) => {
-        if (err) {
-            res.status(500)
-            return;
-        }
-        console.log(num_columns);
-    })
 
     connection.query(columnQuery, (err, columns) => {
         if (err) {
@@ -199,7 +189,7 @@ app.post("/views", (req, res) => {
                 res.status(500).send('Error fetching data from table');
                 return;
             }
-            res.render('display', { columns: JSON.stringify(columns) });
+            res.render('display', { columns: columns });
             console.log(tableData);
         });
     });

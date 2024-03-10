@@ -5,14 +5,101 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>realBase|console</title>
     <link rel="stylesheet" href="css/display.css">
+    <link rel="icon" href="images/logo.png" type="images/png">
+</head>
+<body>
+    <h1>Your table Data</h1>
+    <div class="box">
+        <div class="table">
+            <table>
+                <thead>
+                    <tr>
+                        {{#each columns}}
+                            <th>{{this.Field}}</th>
+                        {{/each}}
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each tableData}}
+                        <tr>
+                            {{#each this}}
+                                <td>{{this}}</td>
+                            {{/each}}
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+        <a href="#" class="add">&plus; Add Field</a>
+    </div>
+
+    <script>
+        const addButton = document.querySelector(".add");
+
+        function removeInput() {
+            this.parentElement.remove();
+        }
+
+        addButton.addEventListener("click", function() {
+            const flex = document.createElement("div");
+            flex.className = "flex";
+
+            const input = document.createElement("input");
+            input.type = "text";
+            input.placeholder = "New Field";
+            input.name = "newField";
+
+            const deleteButton = document.createElement("a");
+            deleteButton.className = "delete";
+            deleteButton.innerHTML = "&times;";
+
+            deleteButton.addEventListener("click", removeInput);
+
+            flex.appendChild(input);
+            flex.appendChild(deleteButton);
+
+            document.querySelector(".input-group").appendChild(flex);
+        });
+
+        window.addEventListener("DOMContentLoaded", function() {
+            const columnNames = JSON.parse('{{{columns}}}');
+            const inputGroup = document.querySelector(".input-group");
+            columnNames.forEach(columnName => {
+                const flex = document.createElement("div");
+                flex.className = "flex";
+                const input = document.createElement("input");
+                input.type = "text";
+                input.placeholder = columnName.Field;
+                input.name = columnName.Field;
+                const deleteButton = document.createElement("a");
+                deleteButton.className = "delete";
+                deleteButton.innerHTML = "&times;";
+                deleteButton.addEventListener("click", removeInput);
+                flex.appendChild(input);
+                flex.appendChild(deleteButton);
+                inputGroup.appendChild(flex);
+            });
+        });
+    </script>
+</body>
+</html>
+
+
+{{!-- <!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>realBase|console</title>
+    <link rel="stylesheet" href="css/display.css">
     <link rel = "icon" href = "images/logo.png" type = "images/png">
 </head>
 <body>
     <h1>Your table Data</h1>
-    
-   <div class="box">
+    <div class="box">
+
         <div class="input-group">
-            <!-- Input fields will be added here dynamically -->
+            
         </div>
         <a href="#" class="add">&plus; Add Field</a>
     </div>
@@ -45,9 +132,8 @@
             document.querySelector(".input-group").appendChild(flex);
         });
 
-        // Function to populate input fields with column names
         window.addEventListener("DOMContentLoaded", function() {
-            const columnNames = JSON.parse('{{{columns}}}'); // Parse the JSON string into an object
+            const columnNames = JSON.parse('{{{columns}}}'); 
             const inputGroup = document.querySelector(".input-group");
             columnNames.forEach(columnName => {
                 const flex = document.createElement("div");
@@ -67,4 +153,4 @@
         });
     </script>
 </body>
-</html>
+</html> --}}
