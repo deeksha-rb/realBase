@@ -94,3 +94,42 @@ input[type="text" i] {
     color:#022836;
     border: 1.5px solid #022836;
 }
+
+.display-tables-button {
+    display: block;
+    margin-top: 50px;
+    margin-left: 983px;
+    padding: 10px 20px;
+    background-color: #022836;
+    color: #9acbff;
+    border: 1px solid #9acbff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.display-tables-button:hover {
+    background-color: #9acbff;
+    color: #022836;
+    border: 1.5px solid #022836;
+}
+
+.delete-tables-button {
+    display: block;
+    margin-top: 20px;
+    margin-left: 968px;
+    padding: 10px 20px;
+    background-color: #022836;
+    color: #9acbff;
+    border: 1px solid #9acbff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-bottom: 50px;
+}
+
+.delete-tables-button:hover {
+    background-color: #9acbff;
+    color: #022836;
+    border: 1.5px solid #022836;
+}

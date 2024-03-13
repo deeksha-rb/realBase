@@ -193,7 +193,7 @@ app.post("/views", (req, res) => {
                 res.status(500).send('Error fetching data from table');
                 return;
             }
-            res.render('display', { selectedTable: currentTable, columns: columns });
+            res.render('display', { selectedTable: currentTable, columns: columns, tableData: tableData });
         });
     });
 });
@@ -201,9 +201,8 @@ app.post("/views", (req, res) => {
 app.get("/display", (req, res) => {
     const currentTable = req.query.currentTable;    
 
-    // Fetch data from the database 
     const dataQuery = `SELECT * FROM ${currentTable}`;
-    console.log("hfh", {currentTable});
+
     connection.query(dataQuery, (err, tableData) => {
         if (err) {
             console.error('Error fetching data from table:', err);
@@ -214,54 +213,6 @@ app.get("/display", (req, res) => {
         res.render("display", { selectedTable: currentTable, columns: [], tableData: tableData }); 
     });
 });
-
-// app.get("/display", (req, res) => {
-//     const currentTable = req.query.currentTable;    
-
-//     const dataQuery = `SELECT * FROM ${currentTable}`;
-//     console.log("hfh", {currentTable});
-//     connection.query(dataQuery, (err, tableData) => {
-//         if (err) {
-//             console.error('Error fetching data from table:', err);
-//             res.status(500).send('Error fetching data from table');
-//             return;
-//         }
-        
-//         res.render("display", { selectedTable: currentTable, columns: [], tableData: tableData }); 
-//     });
-// });
-
-
-
-// app.post('/display', (req, res) => {
-//     const formData = req.body;
-//     const currentTable = req.body.selectedTable;
-
-//     const fieldNames = Object.keys(formData).join(', ');
-//     const fieldValues = Object.values(formData).map(value => typeof value === 'string' ? `'${value}'` : value).join(', ');
-
-//     const query = `INSERT INTO ${currentTable} VALUES (${fieldValues});`;
-
-//     console.log(query);
-//     res.send('Form data received successfully');
-
-// });
-    
-
-
-
-// app.post("/display", (req, res) => {
-//     const formData = req.body; 
-//     const filteredFormData = Object.keys(formData)
-//         .filter(key => !formData.columns.some(column => column.Field === key))
-//         .reduce((obj, key) => {
-//             obj[key] = formData[key];
-//             return obj;
-//         }, {});
-
-//     console.log(filteredFormData); 
-//     res.send('Form data received successfully');
-// });
 
 app.post("/display", (req, res) => {
     const currentTable = req.body.currentTable;
@@ -288,6 +239,50 @@ app.post("/display", (req, res) => {
         }
         console.log("Values inserted successfully");
         res.redirect("/views"); // Redirect back to the display page
+    });
+});
+
+app.post("/getTableData", (req, res) => {
+    const currentTable = req.body.currentTable;
+
+    const dataQuery = `SELECT * FROM ${currentTable}`;
+
+    connection.query(dataQuery, (err, tableData) => {
+        if (err) {
+            console.error('Error fetching data from table:', err);
+            res.status(500).json({ error: 'Error fetching data from table' });
+            return;
+        }
+
+        res.json(tableData);
+    });
+});
+
+
+app.post("/deleteTable", (req, res) => {
+    console.log("entered");
+    const currentTable = req.body.currentTable;
+
+    const deleteQuery = `DELETE FROM id_tables where \`Table Name\` = '${currentTable}';`;
+    const dropQuery = `DROP TABLE ${currentTable};`;
+    console.log(deleteQuery);
+
+    connection.query(dropQuery, (err, dropResult) => {
+        if (err) {
+            console.error('Error dropping table:', err);
+            res.status(500).send('Error dropping table');
+            return;
+        }
+
+        connection.query(deleteQuery, (deleteErr, deleteResult) => {
+            if (deleteErr) {
+                console.error('Error deleting table entry:', deleteErr);
+                res.status(500).send('Error deleting table entry');
+                return;
+            }
+            console.log("Table dropped successfully");
+            res.redirect("/views");
+        });
     });
 });
 
